@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MABU | 作品集</title>
+  
+  <!-- 引入 Google 字體 -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- 引入 Tailwind CSS (CDN版) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 引入 Lucide Icons (CDN版) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* --- 自定義 CSS 樣式 --- */
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --neon-cyan: #00e5ff;
+      --navy-bg: #030816;      
+      --navy-panel: #060e24;   
+      --navy-light: #0a1532;   
+      --rounded-corner: 24px;  
+    }
+
+    body {
+      font-family: 'Noto Sans TC', 'Roboto Mono', sans-serif;
+      background-color: var(--navy-bg);
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    /* 藏藍色網格背景 */
+    .bg-grid {
+      background-size: 50px 50px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    h1, h2, h3, .tech-font {
+      font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+      letter-spacing: 0.1em;
+    }
+
+    /* 線條感鏤空字體與光暈 */
+    .text-outline-cyan {
+      color: rgba(6, 14, 36, 0.6);
+      -webkit-text-stroke: 1.5px var(--neon-cyan);
+      text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+      font-weight: 900;
+    }
+    .neon-text-cyan {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px var(--neon-cyan), 0 0 20px rgba(0, 229, 255, 0.6);
+    }
+
+    /* --- MABU 標題懸停 Glitch 故障特效 --- */
+    .glitch-title {
+      position: relative;
+      display: inline-block;
+    }
+    .glitch-title:hover::before, .glitch-title:hover::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--navy-bg);
+      -webkit-text-stroke: 1.5px var(--neon-cyan);
+    }
+    .glitch-title:hover::before {
+      left: 4px;
+      text-shadow: -2px 0 #ff00ea;
+      animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
+    }
+    .glitch-title:hover::after {
+      left: -4px;
+      text-shadow: -2px 0 #00e5ff;
+      animation: glitch-anim-2 0.4s infinite linear alternate-reverse;
+    }
+    @keyframes glitch-anim-1 {
+      0% { clip-path: inset(20% 0 80% 0); }
+      20% { clip-path: inset(60% 0 10% 0); }
+      40% { clip-path: inset(40% 0 50% 0); }
+      60% { clip-path: inset(80% 0 5% 0); }
+      80% { clip-path: inset(10% 0 70% 0); }
+      100% { clip-path: inset(30% 0 20% 0); }
+    }
+    @keyframes glitch-anim-2 {
+      0% { clip-path: inset(10% 0 60% 0); }
+      20% { clip-path: inset(80% 0 5% 0); }
+      40% { clip-path: inset(30% 0 20% 0); }
+      60% { clip-path: inset(70% 0 15% 0); }
+      80% { clip-path: inset(5% 0 80% 0); }
+      100% { clip-path: inset(50% 0 30% 0); }
+    }
+
+    /* --- 圓鈍造型旋轉資料線框動畫 --- */
+    .rotating-frame {
+      position: relative;
+      background: var(--navy-panel);
+      padding: 8px;
+      border-radius: var(--rounded-corner);
+      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.05);
+    }
+    .rotating-frame-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 20;
+    }
+    .frame-base, .frame-tracer {
+      width: calc(100% - 4px); height: calc(100% - 4px);
+      x: 2px; y: 2px;
+      rx: calc(var(--rounded-corner) - 2px); ry: calc(var(--rounded-corner) - 2px);
+    }
+    .frame-base {
+      fill: none; stroke: rgba(0, 229, 255, 0.15); stroke-width: 2px;
+    }
+    .frame-tracer {
+      fill: none; stroke: var(--neon-cyan); stroke-width: 2.5px;
+      stroke-dasharray: 15 30 5 15 50 30 10 20 120 60;
+      animation: dashScan 12s linear infinite;
+      filter: drop-shadow(0 0 6px var(--neon-cyan));
+    }
+    .rotating-frame:hover .frame-tracer {
+      animation: dashScan 4s linear infinite;
+      stroke-width: 3.5px;
+      filter: drop-shadow(0 0 12px var(--neon-cyan));
+    }
+    @keyframes dashScan { to { stroke-dashoffset: -1000; } }
+
+    /* 圖片容器與懸停 */
+    .image-container {
+      position: relative; width: 100%; height: 100%; overflow: hidden;
+      background: var(--navy-light); border-radius: calc(var(--rounded-corner) - 6px); z-index: 10;
+    }
+    .image-hover-effect {
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.3s ease;
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+    }
+    .rotating-frame:hover .image-hover-effect {
+      transform: scale(1.15); filter: brightness(1.15) contrast(1.1);
+    }
+
+    /* 圓角面板 */
+    .rounded-panel {
+      background: var(--navy-panel); border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: var(--rounded-corner); box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.05);
+    }
+
+    /* 載入更多的浮現動畫 */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* 捲動條 */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy-bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.4); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+    
+    .hidden { display: none !important; }
+  </style>
+</head>
+
+<body class="selection:bg-[#00e5ff] selection:text-[#030816]">
+  
+  <div class="bg-grid"></div>
+
+  <!-- 首頁導航欄 -->
+  <nav class="fixed top-0 left-0 w-full z-50 bg-[#030816]/90 border-b border-[#00e5ff]/30 backdrop-blur-md py-3 px-4 md:px-8 flex flex-col md:flex-row justify-between items-center transition-all">
+    <div class="text-xl font-bold flex items-center mb-3 md:mb-0 tech-font">
+      <i data-lucide="hexagon" class="mr-2 text-[#00e5ff] animate-pulse"></i>
+      <span class="text-[#00e5ff] mr-2 tracking-widest text-outline-cyan text-sm md:text-xl">MABU</span>
+      <span class="text-[#00e5ff]/60 text-xs md:text-sm tracking-[0.2em]">_PORTFOLIO</span>
+    </div>
+    
+    <div class="flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm font-bold tracking-widest">
+      <a href="#home" class="flex items-center text-[#00e5ff]/70 hover:text-[#00e5ff] hover:neon-text-cyan transition-all uppercase">
+        <i data-lucide="terminal-square" class="mr-1 w-4 h-4 hidden sm:block"></i> 首頁
+      </a>
+      <a href="#about" class="flex items-center text-[#00e5ff]/70 hover:text-[#00e5ff] hover:neon-text-cyan transition-all uppercase">
+        <i data-lucide="user" class="mr-1 w-4 h-4 hidden sm:block"></i> 核心模組
+      </a>
+      <a href="#illustrations" class="flex items-center text-[#00e5ff]/70 hover:text-[#00e5ff] hover:neon-text-cyan transition-all uppercase">
+        <i data-lucide="image" class="mr-1 w-4 h-4 hidden sm:block"></i> 插畫作品
+      </a>
+      <a href="#sketches" class="flex items-center text-[#00e5ff]/70 hover:text-[#00e5ff] hover:neon-text-cyan transition-all uppercase">
+        <i data-lucide="pen-tool" class="mr-1 w-4 h-4 hidden sm:block"></i> 人物速寫
+      </a>
+      <a href="#contact" class="flex items-center text-[#00e5ff]/70 hover:text-[#00e5ff] hover:neon-text-cyan transition-all uppercase">
+        <i data-lucide="mail" class="mr-1 w-4 h-4 hidden sm:block"></i> 建立連線
+      </a>
+    </div>
+  </nav>
+
+  <!-- 首頁 Hero 區塊 -->
+  <section id="home" class="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-transparent">
+    <canvas id="glitch-canvas" class="absolute inset-0 w-full h-full z-0 opacity-40"></canvas>
+    <div class="absolute z-10 inset-0 bg-gradient-to-b from-transparent via-[#030816]/30 to-[#030816] pointer-events-none"></div>
+
+    <div class="relative z-20 text-center px-4 max-w-4xl mt-16 pointer-events-none">
+      <div class="mb-6 flex justify-center opacity-90">
+        <i data-lucide="terminal" class="w-10 h-10 neon-text-cyan text-[#00e5ff]"></i>
+      </div>
+      
+      <h1 class="flex flex-col items-center mb-6 tech-font pointer-events-auto">
+        <span class="text-6xl md:text-[8rem] leading-none mb-4 text-outline-cyan tracking-widest glitch-title" data-text="MABU">
+          MABU
+        </span>
+        <span class="text-3xl md:text-5xl mt-2 text-outline-cyan tracking-[0.15em]">
+          抹布的作品集
+        </span>
+      </h1>
+      
+      <div class="flex items-center justify-center space-x-4 mb-8 opacity-70">
+        <div class="h-[1px] w-12 md:w-24 bg-[#00e5ff] rounded-full"></div>
+        <p class="text-xs md:text-sm text-[#00e5ff] tracking-[0.3em] uppercase font-mono neon-text-cyan" id="system-status">
+          [ SYSTEM_VULNERABILITY_DETECTED ]
+        </p>
+        <div class="h-[1px] w-12 md:w-24 bg-[#00e5ff] rounded-full"></div>
+      </div>
+
+      <a href="#about" class="inline-flex items-center justify-center mt-12 text-[#00e5ff] hover:text-[#00e5ff]/50 transition-colors animate-bounce opacity-80 neon-text-cyan pointer-events-auto">
+        <i data-lucide="chevron-down" class="w-10 h-10"></i>
+      </a>
+    </div>
+
+    <!-- 浮動在畫面的數據監控面板 -->
+    <div class="absolute right-4 bottom-1/4 text-[#00e5ff]/40 font-mono text-xs text-right hidden md:block z-20 pointer-events-none">
+      <div class="border-r-2 border-[#00e5ff]/50 pr-2 mb-2">TARGET_LOCK</div>
+      <div id="data-stream">010101</div>
+      <div id="random-num">4592</div>
+      <div class="mt-2 text-[10px] opacity-60">MEM_LEAK: TRUE</div>
+    </div>
+  </section>
+
+  <!-- 自我介紹 -->
+  <section id="about" class="py-24 px-6 relative z-30 bg-transparent">
+    <div class="max-w-6xl mx-auto pt-8">
+      <div class="flex items-center mb-12 border-b border-[#00e5ff]/20 pb-6">
+        <i data-lucide="user" class="text-[#00e5ff] mr-4 w-8 h-8"></i>
+        <h2 class="text-3xl md:text-4xl font-bold tech-font tracking-widest neon-text-cyan">核心模組</h2>
+        <span class="text-xs md:text-sm text-[#00e5ff]/60 ml-4 tracking-[0.2em] font-mono border-l border-[#00e5ff]/60 pl-4">// PROFILE</span>
+      </div>
+
+      <div class="flex flex-col lg:flex-row items-stretch gap-8 lg:gap-16">
+        <div class="lg:w-1/3 flex justify-center items-center">
+          <div class="rotating-frame w-64 h-64 md:w-80 md:h-80 flex-shrink-0 group">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container">
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] pointer-events-none z-10"></div>
+              <img src="IMG_3562.JPG" alt="MABU Profile" class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500" />
+            </div>
+            <div class="absolute -bottom-3 right-6 bg-[#030816] px-3 py-1 rounded-full border border-[#00e5ff]/50 text-[#00e5ff] text-xs font-mono z-30">ID:MABU</div>
+          </div>
+        </div>
+
+        <div class="lg:w-2/3 rounded-panel p-8 md:p-10 flex flex-col justify-center relative">
+          <h3 class="text-2xl font-bold mb-6 flex items-center border-b border-[#00e5ff]/30 pb-4 tech-font tracking-widest neon-text-cyan text-[#00e5ff]">
+            <i data-lucide="hexagon" class="mr-3 text-[#00e5ff] w-5 h-5"></i>
+            抹布 / MABU
+          </h3>
+          <div class="space-y-6 text-[#00e5ff]/80 leading-relaxed text-lg text-justify font-light tracking-wide">
+            <p>
+              <span class="text-[#00e5ff] font-bold mr-2 text-sm font-mono tracking-widest">[ 系統日誌 ]</span> 
+              你好！我是<span class="text-[#00e5ff] font-bold mx-1">抹布 (MABU)</span>，一名熱愛數位藝術與美學設計的創作者。
+            </p>
+            <p>
+              <span class="text-[#00e5ff] font-bold mr-2 text-sm font-mono tracking-widest">[ 核心機能 ]</span> 
+              我的畫布是連接虛擬與現實的終端機。我致力於透過深邃的色彩、俐落的光影配置，以及充滿性格的角色設計，打造出具有視覺衝擊力的插畫。無論是動態瞬間，或是奇幻氛圍，都是我在數據深淵中的探索軌跡。
+            </p>
+            <div class="grid grid-cols-2 gap-4 pt-4 font-mono text-xs tracking-widest border-t border-[#00e5ff]/20 mt-6">
+              <div class="flex flex-col border-l-2 border-[#00e5ff]/40 pl-3">
+                <span class="text-[#00e5ff]/60 mb-1">主機位置 //</span><span class="text-[#00e5ff] uppercase">Taiwan</span>
+              </div>
+              <div class="flex flex-col border-l-2 border-[#00e5ff]/40 pl-3">
+                <span class="text-[#00e5ff]/60 mb-1">專長領域 //</span><span class="text-[#00e5ff] uppercase">角色設計 / 插畫</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 作品區塊 -->
+  <section class="py-20 px-6 relative z-30 bg-transparent">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- 插畫作品 -->
+      <div id="illustrations" class="pt-16 -mt-16 mb-24">
+        <div class="flex items-center mb-10 border-b border-[#00e5ff]/20 pb-4">
+          <i data-lucide="image" class="text-[#00e5ff] mr-4 w-7 h-7"></i>
+          <h3 class="text-2xl md:text-3xl font-bold tech-font tracking-widest neon-text-cyan text-[#00e5ff]">插畫作品</h3>
+        </div>
+        
+        <!-- 作品網格容器 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12" id="grid-ill">
+          
+          <!-- ★ 特別企劃：橫跨大版面的「完成圖 + 過程影片」卡片 ★ -->
+          <!-- 注意：lg:col-span-3 會讓它在電腦版佔滿整排 -->
+          <div class="rotating-frame col-span-1 md:col-span-2 lg:col-span-3 group">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            
+            <div class="image-container flex flex-col md:flex-row">
+              <!-- 左側：完成圖片 (可點擊放大) -->
+              <div class="w-full md:w-1/2 h-80 md:h-[32rem] relative cursor-pointer" onclick="openLightbox('1png.jpg')">
+                <img src="1png.jpg" alt="Final Artwork" class="w-full h-full object-cover object-top image-hover-effect">
+                <div class="absolute top-4 left-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] border border-[#00e5ff]/30 z-30">
+                  FINAL_ARTWORK
+                </div>
+              </div>
+              
+              <!-- 右側：繪圖過程影片 -->
+              <div class="w-full md:w-1/2 h-80 md:h-[32rem] relative border-t md:border-t-0 md:border-l border-[#00e5ff]/20 bg-black">
+                <!-- 💡 請將 src 裡面的網址換成你的繪圖過程 mp4 檔案名稱，例如 "process.mp4" -->
+                <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                  <source src="hlw.mp4" />
+                </video>
+                <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] border border-[#00e5ff]/30 flex items-center z-30">
+                  <i data-lucide="play-circle" class="w-3 h-3 mr-1"></i> PROCESS_RECORD
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 特別企劃結束 -->
+
+          <!-- 一般插畫作品 -->
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('4.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="4.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_02</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('2.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="2.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_03</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('3.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="3.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_04</div>
+          </div>
+
+          <!-- 隱藏的作品，點擊按鈕後會顯示 -->
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-ill" onclick="openLightbox('5.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="5.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_05</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-ill" onclick="openLightbox('6.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="6.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_06</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-ill" onclick="openLightbox('7.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="7.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_07</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-ill" onclick="openLightbox('8.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="8.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_08</div>
+          </div>
+            <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-ill" onclick="openLightbox('9.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="9.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">FILE_09</div>
+            
+          </div>
+        </div>
+
+        <!-- 查看更多按鈕 -->
+        <div class="text-center mt-12" id="btn-ill">
+          <button onclick="loadMoreItems('item-ill', 'btn-ill')" class="relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-mono font-bold text-[#00e5ff] border border-[#00e5ff]/50 rounded-full hover:bg-[#00e5ff]/10 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all group">
+            <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-[#00e5ff]/20 rounded-full group-hover:w-56 group-hover:h-56"></span>
+            <span class="relative z-10 flex items-center tracking-widest"><i data-lucide="download-cloud" class="w-4 h-4 mr-2"></i> 載入更多資料...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 人物速寫 -->
+      <div id="sketches" class="pt-16 -mt-16 pt-24 mb-24 border-t border-[#00e5ff]/20">
+        <div class="flex items-center mb-10 border-b border-[#00e5ff]/20 pb-4">
+          <i data-lucide="pen-tool" class="text-[#00e5ff] mr-4 w-7 h-7"></i>
+          <h3 class="text-2xl md:text-3xl font-bold tech-font tracking-widest neon-text-cyan text-[#00e5ff]">人物速寫</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12" id="grid-skt">
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('11.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="11.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">SEC_01</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('22.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="22.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">SEC_02</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group" onclick="openLightbox('33.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="33.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">SEC_03</div>
+          </div>
+
+          <!-- 隱藏的速寫作品 -->
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-skt" onclick="openLightbox('44.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="44.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">SEC_04</div>
+          </div>
+          <div class="rotating-frame h-80 md:h-[26rem] cursor-pointer group hidden item-skt" onclick="openLightbox('55.jpg')">
+            <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer"></rect></svg>
+            <div class="image-container"><img src="55.jpg" alt="Artwork" class="image-hover-effect"></div>
+            <div class="absolute top-4 right-4 bg-[#030816]/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-mono text-[#00e5ff] z-30 opacity-60 group-hover:opacity-100 transition-opacity border border-[#00e5ff]/30">SEC_05</div>
+          </div>
+        </div>
+
+        <!-- 查看更多按鈕 -->
+        <div class="text-center mt-12" id="btn-skt">
+          <button onclick="loadMoreItems('item-skt', 'btn-skt')" class="relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-mono font-bold text-[#00e5ff] border border-[#00e5ff]/50 rounded-full hover:bg-[#00e5ff]/10 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all group">
+            <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-[#00e5ff]/20 rounded-full group-hover:w-56 group-hover:h-56"></span>
+            <span class="relative z-10 flex items-center tracking-widest"><i data-lucide="download-cloud" class="w-4 h-4 mr-2"></i> 載入更多資料...</span>
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- 聯絡方式 -->
+  <section id="contact" class="py-24 px-6 relative z-30 bg-transparent">
+    <div class="max-w-4xl mx-auto rounded-panel p-8 md:p-16 text-center relative overflow-hidden">
+      <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMDBlNWZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8cGF0aCBkPSJNMCAwbDhfOFptOF8wTDBfOCIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjAuNSIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4=')]"></div>
+
+      <i data-lucide="radio" class="mx-auto text-[#00e5ff] mb-8 relative z-10 animate-pulse w-12 h-12"></i>
+      
+      <h2 class="text-3xl md:text-4xl font-bold mb-6 tech-font tracking-widest relative z-10 neon-text-cyan text-[#00e5ff]">建立連線</h2>
+      <div class="w-16 h-1 bg-[#00e5ff]/50 mx-auto mb-8 relative z-10 rounded-full"></div>
+
+      <div class="space-y-6 relative z-10">
+        <p class="text-sm md:text-base text-[#00e5ff]/80 tracking-wider font-light">
+          如果您對我的作品感興趣，或有合作的需求，<br class="hidden md:block"/>歡迎透過以下頻道建立安全連線。
+        </p>
+        
+        <div class="inline-block bg-[#030816] border border-[#00e5ff]/50 rounded-2xl p-6 md:px-10 mt-8 group hover:border-[#00e5ff] transition-colors cursor-text relative shadow-[inset_0_0_15px_rgba(0,229,255,0.1)] w-full max-w-lg">
+          <div class="font-mono text-[#00e5ff]/80 text-xs text-left mb-2 tracking-widest uppercase">Target Email:</div>
+          <!-- ★ 更新了真實信箱，加入 break-all 確保手機不斷行 ★ -->
+          <div class="text-lg md:text-2xl font-bold text-[#00e5ff] tracking-wider font-mono select-all neon-text-cyan break-all">
+            09602802188j@gmail.com
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁腳 -->
+  <footer class="py-8 bg-[#02050f] text-center relative z-40 border-t border-[#00e5ff]/20">
+    <div class="flex justify-center items-center">
+       <span class="font-bold tracking-[0.3em] text-[#00e5ff]/50 text-xs font-mono">
+         MABU &copy; <span id="current-year"></span> // SYSTEM TERMINATED
+       </span>
+    </div>
+  </footer>
+
+  <!-- Lightbox (全螢幕大圖) -->
+  <div id="lightbox" class="fixed inset-0 z-[100] bg-[#02050f]/95 backdrop-blur-md p-4 md:p-12 cursor-zoom-out transition-all hidden items-center justify-center" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-[#00e5ff] hover:text-white transition-colors z-50 bg-[#060e24] p-3 rounded-full border border-[#00e5ff]/50 hover:shadow-[0_0_15px_rgba(0,229,255,0.5)]" onclick="closeLightbox(event)">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="rotating-frame max-w-full max-h-full cursor-default" onclick="event.stopPropagation()">
+      <svg class="rotating-frame-svg"><rect class="frame-base"></rect><rect class="frame-tracer" style="animation-duration: 6s;"></rect></svg>
+      <div class="image-container bg-[#030816]">
+        <div class="absolute top-4 left-4 text-[#00e5ff]/50 text-xs font-mono pointer-events-none mix-blend-screen z-20">IMG_DATA_RENDERED</div>
+        <img id="lightbox-img" src="" alt="Artwork Fullscreen" class="max-w-full max-h-[85vh] object-contain relative z-10" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================
+       JavaScript 邏輯區 
+       =============================== -->
+  <script>
+    // 1. 初始化 Lucide 圖標
+    lucide.createIcons();
+    document.getElementById('current-year').innerText = new Date().getFullYear();
+
+    // 2. 右下角資料流跳動數字
+    const streamEl = document.getElementById('data-stream');
+    const numEl = document.getElementById('random-num');
+    if (streamEl && numEl) {
+      setInterval(() => {
+        streamEl.innerText = Math.random().toString(36).substring(2, 8).toUpperCase();
+        numEl.innerText = Math.floor(Math.random() * 9000 + 1000);
+      }, 150);
+    }
+
+    // 3. 動態載入更多作品功能
+    function loadMoreItems(itemClass, btnId) {
+      const hiddenItems = document.querySelectorAll('.' + itemClass);
+      hiddenItems.forEach(item => {
+        item.classList.remove('hidden');
+        item.classList.add('fade-in-up');
+      });
+      document.getElementById(btnId).style.display = 'none';
+    }
+
+    // 4. Lightbox 開關功能
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(imageSrc) {
+      lightboxImg.src = imageSrc;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeLightbox(event) {
+      if (event) event.stopPropagation(); 
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = 'auto'; 
+      setTimeout(() => { lightboxImg.src = ""; }, 300); 
+    }
+
+    // 5. Canvas 電子漏洞(Glitch)背景動畫
+    const canvas = document.getElementById('glitch-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawGlitch() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.05)';
+      for(let i = 0; i < 6; i++) {
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        let w = Math.random() * 300 + 50; 
+        let h = Math.random() * 4 + 1;    
+        ctx.fillRect(x, y, w, h);
+      }
+
+      if (Math.random() > 0.92) {
+        ctx.fillStyle = 'rgba(0, 229, 255, 0.15)';
+        let tearY = Math.random() * canvas.height;
+        ctx.fillRect(0, tearY, canvas.width, Math.random() * 8 + 2);
+        
+        if (Math.random() > 0.5) {
+          ctx.font = '14px monospace';
+          ctx.fillStyle = 'rgba(0, 229, 255, 0.3)';
+          ctx.fillText('ERR_SYS_CORRUPTION', Math.random() * canvas.width, tearY - 5);
+        }
+      }
+      setTimeout(() => { requestAnimationFrame(drawGlitch); }, 50); 
+    }
+    drawGlitch();
+  </script>
+</body>
+</html>
